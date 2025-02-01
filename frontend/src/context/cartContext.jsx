@@ -84,4 +84,6 @@ export const CartProvider = ({ children }) => {
 };
 
 // Hello wrold idk
+
+// Hello wrold idk
 export const useCart = () => useContext(CartContext);
