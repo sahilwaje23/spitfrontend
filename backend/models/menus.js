@@ -13,11 +13,6 @@ const menuSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ["Starter", "Main Course", "Dessert", "Beverage"],
-  },
-  isAvailable: {
-    type: Boolean,
-    default: true,
   },
   createdAt: {
     type: Date,
@@ -25,5 +20,5 @@ const menuSchema = new mongoose.Schema({
   },
 });
 
-const Menu = mongoose.model("Menu", menuSchema);
+const Menu = mongoose.model("menu-spit", menuSchema);
 module.exports = Menu;

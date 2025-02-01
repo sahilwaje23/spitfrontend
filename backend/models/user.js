@@ -14,10 +14,19 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  orders: {
-    type: [Schema.Types.ObjectId],
-    ref: "orders-spit",
-  },
+  orders: [
+    {
+      menuId: {
+        type: Schema.Types.ObjectId,
+        ref: "menu-spit",
+        required: true,
+      },
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 const User = model("user-spit", userSchema);

@@ -1,6 +1,9 @@
 const router = require("express").Router();
+const { Router } = require("express");
 const MessManager = require("../models/managers");
 const { createToken } = require("../services/index");
+const { authMiddlewareManager } = require("../middlewares/auth");
+const Menu = require("../models/menus");
 
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
@@ -21,6 +24,7 @@ router.post("/signup", async (req, res) => {
 
     // Generate JWT token
     const token = createToken(manager);
+    res.cookie("token", token);
 
     res.status(201).json({ message: "Signup successful", token, manager });
   } catch (error) {
@@ -46,10 +50,22 @@ router.post("/signin", async (req, res) => {
 
     // Generate JWT token
     const token = createToken(manager);
+    res.cookie("token", token);
 
     res.status(200).json({ message: "Signin successful", token, manager });
   } catch (error) {
     res.status(500).json({ message: "Error signing in", error });
+  }
+});
+
+router.post("/add-menu", authMiddlewareManager, async (req, res) => {
+  try {
+    const { name, price, category } = req.body;
+    const newMenu = new Menu({ name, price, category });
+    await newMenu.save();
+    res.status(200).json({ message: "Menu added successfully", newMenu });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding menu", error });
   }
 });
 
