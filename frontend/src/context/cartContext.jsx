@@ -3,7 +3,6 @@ import React, { createContext, useContext, useReducer } from "react";
 
 export const CartContext = createContext();
 
-
 const initialState = {
   items: [],
   total: 0,
@@ -84,4 +83,5 @@ export const CartProvider = ({ children }) => {
   );
 };
 
+// Hello wrold idk
 export const useCart = () => useContext(CartContext);
