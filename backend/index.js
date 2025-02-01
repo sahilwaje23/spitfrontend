@@ -4,6 +4,7 @@ const cors = require("cors");
 
 const connectToMongoDb = require("./connection");
 const userRoutes = require("./routes/user");
+const managerRoutes = require("./routes/manager");
 
 const MONGO_URL = process.env.MONGO_URL;
 
@@ -27,5 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // routes :
 app.use("/user", userRoutes);
+app.use("/manager", managerRoutes);
 
 app.listen(8000, () => console.log("Listening on port 8000"));

@@ -38,10 +38,11 @@ router.post("/signup", async (req, res) => {
 
     // Create new user (without hashing password)
     const user = new User({ name, rollNo, password });
-    await user.save();
+    const newUser = await user.save();
 
     // Generate JWT Token
-    const token = createToken(user);
+    console.log(newUser);
+    const token = createToken(newUser);
 
     res.status(201).json({ message: "Signup successful", token, user });
   } catch (error) {
