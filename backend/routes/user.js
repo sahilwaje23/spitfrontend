@@ -1,16 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/user");
-
-router.post("/signup", (req, res) => {
-  const { name, rollNo, password } = req.body;
-  const user = new User({ name, rollNo, password });
-  try {
-    user.save();
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
+const { createToken } = require("../services/index");
 
 router.post("/signin", async (req, res) => {
   const { rollNo, password } = req.body;
@@ -22,14 +12,40 @@ router.post("/signin", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (user.password !== password) {
+    // Directly compare passwords (without hashing)
+    if (password !== user.password) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    res.status(200).json({ message: "Signin successful", user });
+    const token = createToken(user);
 
+    res.status(200).json({ message: "Signin successful", token, user });
   } catch (error) {
-    res.status(500).json(error);
+    console.log(error);
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
+router.post("/signup", async (req, res) => {
+  const { name, rollNo, password } = req.body;
+
+  try {
+    // Check if user already exists
+    let existingUser = await User.findOne({ rollNo });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Create new user (without hashing password)
+    const user = new User({ name, rollNo, password });
+    await user.save();
+
+    // Generate JWT Token
+    const token = createToken(user);
+
+    res.status(201).json({ message: "Signup successful", token, user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 });
 
